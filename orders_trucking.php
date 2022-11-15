@@ -314,7 +314,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
 
                 <td class="text-center">
                     <?php 
-                        if($trucking_orders_data[$row][17] == "Yes")
+                        if($trucking_orders_data[$row][16] == "Yes")
                         { ?>
                             <div class="row">
                                 <div class="col-12">
@@ -326,7 +326,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                     <?php } ?>
 
                     <?php 
-                        if($trucking_orders_data[$row][17] == "0")
+                        if($trucking_orders_data[$row][16] == "0")
                         { ?>
                             <div class="row">
                                 <div class="col-12">
@@ -341,7 +341,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                 </td>
                 <td class="text-center">
                     <?php 
-                        if($trucking_orders_data[$row][17] == "0")
+                        if($trucking_orders_data[$row][16] == "0")
                         { ?>
                             <a href="http://localhost/Container-Scheduling-and-management/trucking_company.php?tid=<?php echo $trucking_orders_data[$row][0]; ?>">
                             <button type="button" class="btn btn-success"> Accept   </button>   
