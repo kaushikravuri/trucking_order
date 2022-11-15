@@ -42,25 +42,28 @@ if($_SERVER['REQUEST_METHOD'] == "GET")
                 $ships = array();
                 for ($x = 0; $x < count($onship_data); $x++) {
 
-                    $query = "select distinct shipId from shipping_order where containerId = '{$onship_data[$x][0]}' and arrived = 0";
+                    $query = "select distinct * from shipping_order where containerId = '{$onship_data[$x][0]}' and arrived = 0";
                     $result = mysqli_query($con, $query); 
                     if($result && mysqli_num_rows($result) > 0)
                     {
                         $shipIds = mysqli_fetch_all($result);
-                        for ($y = 0; $y < count($onship_data); $y++) {
+                        // for ($y = 0; $y < count($onship_data); $y++) {
 
-                            $query = "select * from shipping_order where shipId = '{$shipIds[$y][0]}'";
-                            $result = mysqli_query($con, $query); 
-                            if($result && mysqli_num_rows($result) > 0)
-                            {
-                                $data = mysqli_fetch_all($result);
-                            }
-                        }
+                        //     $query = "select distinct * from shipping_order where shipId = '{$shipIds[$y][0]}'";
+                        //     $result = mysqli_query($con, $query); 
+                        //     if($result && mysqli_num_rows($result) > 0)
+                        //     {
+                        //         $data = mysqli_fetch_all($result);
+                        //     }
+                        // }
                     }
-                    // print_r($shipIds);
-                    // echo "\n";
-                    // print_r($data);
+                //     print_r($shipIds);
+                //     // echo "\n";
+                //     // print_r($data);
                 }
+                print_r($onship_data);
+                print_r($shipIds);
+
             }
             // print_r($toship);
             // else
@@ -233,14 +236,14 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                 </tr>
             </thead>
             <tbody>
-            <?php for ($row = 0; $row < count($data); $row++) {?>
+            <?php for ($row = 0; $row < count($shipIds); $row++) {?>
               <tr>
-                <th class="text-center" scope="row"><?php echo $data[$row][5] ?></th>
-                <td class="text-center"><?php echo $data[$row][2] ?></td>
-                <td class="text-center"><?php echo $data[$row][3] ?></td>
+                <th class="text-center" scope="row"><?php echo $shipIds[$row][5] ?></th>
+                <td class="text-center"><?php echo $shipIds[$row][2] ?></td>
+                <td class="text-center"><?php echo $shipIds[$row][3] ?></td>
                 <td>
                     <form action= "shiparrived.php" method = "post">
-                        <input type="hidden" name="total" id="poster" value="<?php echo $data[$row][1] ?>"/>
+                        <input type="hidden" name="total" id="poster" value="<?php echo $shipIds[$row][1] ?>"/>
                         <button type="submit" class="btn btn-success">
                         <?php echo "Arrived" ?>
                         </button>

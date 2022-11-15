@@ -4,31 +4,126 @@ session_start();
 include("connection.php");
 include("functions.php");
 $user_data = check_login($con);
+$user_id = $user_data['user_id'];
+
+$data_loaded = 0;
+
+$get_drivers = "select * from drivers ";
+    $result = mysqli_query($con, $get_drivers);
+    // print_r( $result);
+
+    if($result)
+    {
+        if($result && mysqli_num_rows($result) > 0)
+        {
+            $drivers_data = mysqli_fetch_all($result);
+            // print_r($harbors_data);
+        }
+    }
+
+if($_SERVER['REQUEST_METHOD'] == "GET")
+{
+
+    if (sizeof($_GET,1) == 1)
+    {
+        // print_r( $_GET['product_id']);
+        $driver_id = $_GET['did'];
+        // Reading from the data base
+        $query = "select * from truck_orders where driverId = '{$driver_id}'";
+        $result = mysqli_query($con, $query);
+        // print_r( $result);
+
+        if($result)
+        {
+            if($result && mysqli_num_rows($result) > 0)
+            {
+                $trucking_orders_data = mysqli_fetch_all($result);
+                $data_loaded = 1;
+                // header("Location: orders_trucking.php");
+                // die;
+                // print_r( $loading_order_data);
+                // $selected_product_flag = 1;
+            }
+        }
+
+        else{
+            echo "problem in getting data";
+        }
+
+    }
+}
+
 if($_SERVER['REQUEST_METHOD'] == "POST")
 {
+    // print_r($_POST);
+    $trucking_order_id = $_POST['total'];
+    $accepted = "Yes";
+    $query = "update truck_orders set acceptedByWarehouse ='{$accepted}' where truckOrderId = '{$trucking_order_id}'";
+
+    mysqli_query($con, $query);
+
+    // $containerId = $_POST['containerId'];
+    // $sourceHarborId = $_POST['sourceHarborId'];
+    // $destinationHarborId = $_POST['destinationHarborId'];
+    // $arrivalDate = $_POST['arrival_date'];
+    // // Changing the date format
+    // $formatDate = explode("-",$arrivalDate);
+    // $c = $formatDate[0];
+    // $formatDate[0] = $formatDate[1];
+    // $formatDate[1] = $formatDate[2];
+    // $formatDate[2] = $c;
+    // $formattedDate = implode("-",$formatDate);
+    // $arrivalDate = $formattedDate;
+
+    
+
+    // $real_data = json_decode($_POST['total'],true);
+    // $onShipDate = $real_data['onShipDate'];
+    // $ship_id = $real_data['shipId'];
+    // $ffcId = $user_id;
+
+    // echo $ship_id;
+
+    // $query = "insert into shipping_order (containerId,sourceHarborId,destinationHarborId,FFCId,shipID,onShipDate,arrivalDate,arrived,completedByTruck) values ('{$containerId}', '{$sourceHarborId}', '{$destinationHarborId}', '{$ffcId}', '{$ship_id}', '{$onShipDate}', '{$arrivalDate}', 0,0)";
+
+    // mysqli_query($con, $query);
+    // $status = 1;
+    
+    // $query = "update loading_orders set onShip ='{$status}' where containerId = '{$containerId}'";
+
+    // mysqli_query($con, $query);
+
+    // $onShip = "Yes";
+    
+    // $query = "update containers set onShip ='{$onShip}' where containerId = '{$containerId}'";
+
+    // mysqli_query($con, $query);
+
+    header("Location: success_accepted.php");
+    die;
     // When the user clicks on the create account button
-    $harborName = $_POST['harbourName'];
-    $country  = $_POST['country'];
-    $address = $_POST['address'];
-    $telephone = $_POST['telephone'];
+    // $harborName = $_POST['harbourName'];
+    // $country  = $_POST['country'];
+    // $address = $_POST['address'];
+    // $telephone = $_POST['telephone'];
 
-    if((!empty($harborName)) && (!empty($country)) && (!empty($address))&&
-            (!empty($telephone)))
-        {
+    // if((!empty($harborName)) && (!empty($country)) && (!empty($address))&&
+    //         (!empty($telephone)))
+    //     {
 
-            // Saving to data base
-            $query = "insert into harbors (harborName,country,address,telephone) values ('$harborName','$country','$address','$telephone')";
+    //         // Saving to data base
+    //         $query = "insert into harbors (harborName,country,address,telephone) values ('$harborName','$country','$address','$telephone')";
 
-            mysqli_query($con, $query);
-            // echo '<script>alert("Please enter valid information!")</script>';
+    //         mysqli_query($con, $query);
+    //         // echo '<script>alert("Please enter valid information!")</script>';
 
-            header("Location: addharbour.php");
-            die;
-        }
-        else{
-            echo '<script>alert("Please enter valid information!")</script>';
+    //         header("Location: addharbour.php");
+    //         die;
+    //     }
+    //     else{
+    //         echo '<script>alert("Please enter valid information!")</script>';
             
-        }
+    //     }
 
 }
 ?>
@@ -166,41 +261,34 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
         </div>
     </nav>
 </div>
-    <div class="container mt-5">
-        <div class="row justify-content-center mt-5">
-            <div class="col-6">
-                <img src="harbor.jpg" class="img-fluid" alt="Responsive image">
-                
-                    <ul>
-                        <li><p class="mt-4"> Fill the details to add a harbour to the database</p> </li>
-                    </ul>
-            </div>
-            <div class="col-6">
+    <div class="container mt-1">
+        <div class="row justify-content-center mt-1">
+            
+            <div class="col-8">
                 <div class="card p-2">
                     <div class="card-body"> 
-                       <form method = "post">
-                            <div class="mb-4">
-                                <label for="exampleFormControlInput1" class="form-label">Harbour Name</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" name = "harbourName">
-                            </div>
 
                             <div class="mb-4">
-                                <label for="exampleFormControlInput1" class="form-label">Country</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" name = "country">
+                                <label for="exampleFormControlInput1" class="form-label">Driver name</label>
+
+                                <div class="dropdown">
+                                    <select class="form-select" aria-label="Default select example" onchange="location = this.value;" id="containerId">
+                                        <option selected>Choose your name from the list</option>
+                                        <?php for ($row = 0; $row < count($drivers_data); $row++) { ?>
+                                            
+                                            <option name="<?php echo $drivers_data[$row][0];?>" value="http://localhost/Container-Scheduling-and-management/orders_driver.php?did=<?php echo $drivers_data[$row][0]; ?>" >
+                                                <?php echo $drivers_data[$row][1]; ?>
+                                            </option>
+                                        <?php }?>
+
+                                    </select>
+                                </div>
                             </div>
-            
-                            <div class="mb-4">
-                                <label for="exampleFormControlInput1" class="form-label">Address</label>
-                                <textarea class="form-control" id = "Address" name = "address" rows="2"></textarea>
+                            
+                                <!-- <input type="hidden" class="form-control" id="exampleFormControlInput1" name = "sourceHarbourId" vlue=""> -->
                             </div>
 
-                            <div class="mb-4">
-                                <label for="exampleFormControlInput1" class="form-label">Telephone</label>
-                                <input type="text" class="form-control" id="exampleFormControlInput1" name = "telephone">
-                            </div>
-            
-                            <button type="submit" class="btn btn-primary">Add harbor</button>
-                        </form>
+                    
                     </div>
 
                   </div>
@@ -208,6 +296,75 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
         </div>
         
     </div>
+    <?php if($data_loaded == 1){ ?>
+    <div class="container bg-light">
+      <div class="row mt-4">
+
+          <table class="table">
+            <thead>
+                <tr>
+                <th scope="col" class="text-center">S.no</th>
+                <th scope="col" class="text-center">Container Id</th>
+                <th scope="col" class="text-center">Warehouse Id</th>
+
+                <th scope="col" class="text-center">Action</th>
+
+                </tr>
+            </thead>
+            <tbody>
+            <?php for ($row = 0; $row < count($trucking_orders_data); $row++) {?>
+              <tr>
+                <th scope="row" class="text-center"><?php echo $row+1 ?></th>
+                <th scope="row" class="text-center"><?php echo $trucking_orders_data[$row][1] ?></th>
+                <th scope="row" class="text-center"><?php echo $trucking_orders_data[$row][9] ?></th>
+
+               
+              
+                <td class="text-center">
+                    <?php 
+                        if($trucking_orders_data[$row][18] == "0")
+                        { ?>
+                            <form method="post" action="orders_warehouse.php">
+                            <input type="hidden" name="total" id="poster" value="<?php echo $trucking_orders_data[$row][0]; ?>"/>  
+                            <button type="submit" class="btn btn-success"> Delivered </button> 
+                            </form>  
+                        <?php } ?>   
+                </td>
+              </tr>
+              <?php } ?>
+            </tbody>
+          </table>  
+      </div>
+    </div>
+    <?php } ?>
+    <script>
+        var onship = "";
+        var shipId = 0;
+        var productId = 0;
+
+        function setShipId()
+        {
+            var subjectIdNode = document.getElementById('ship_id');
+            shipId = subjectIdNode.options[subjectIdNode.selectedIndex].value;
+            // console.log("The selected name=" + harborId);
+
+        }
+        
+        function setJson()
+        {
+            var currentdate = new Date();
+            var date = currentdate.getMonth().toString()+"-"+currentdate.getDate().toString()+"-"+currentdate.getFullYear().toString()
+            var poster =  document.getElementById("poster");
+            var order_data = {
+                    "shipId"    : parseInt(shipId),
+                    "onShipDate" : date
+                    }
+            json_data = JSON.stringify(order_data);
+            poster.value = json_data;
+
+
+        }
+    </script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-u1OknCvxWvY5kfmNBILK2hRnQC3Pr17a+RTT6rIHI7NnikvbZlHgTPOOmMi466C8" crossorigin="anonymous"></script>
   </body>
 </html>

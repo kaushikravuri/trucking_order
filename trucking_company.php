@@ -7,6 +7,34 @@ $user_data = check_login($con);
 $user_id = $user_data['user_id'];
 
 
+$get_ships = "select * from ships";
+
+$result = mysqli_query($con, $get_ships);
+// print_r( $result);
+
+if($result)
+{
+    if($result && mysqli_num_rows($result) > 0)
+    {
+        $ships_data = mysqli_fetch_all($result);
+        // print_r($harbors_data);
+    }
+}
+
+$get_trucks = "select * from trucks";
+
+$result = mysqli_query($con, $get_trucks);
+// print_r( $result);
+
+if($result)
+{
+    if($result && mysqli_num_rows($result) > 0)
+    {
+        $trucks_data = mysqli_fetch_all($result);
+        // print_r($harbors_data);
+    }
+}
+
 $get_harbors = "select harborId,harborName from harbors";
 
 $result = mysqli_query($con, $get_harbors);
@@ -39,40 +67,105 @@ else{
 echo "problem in getting data";
 }
 
+$get_drivers = "select * from drivers";
+
+$result = mysqli_query($con, $get_drivers);
+// print_r( $result);
+
+if($result)
+{
+    if($result && mysqli_num_rows($result) > 0)
+    {
+        $drivers_data = mysqli_fetch_all($result);
+        // print_r( $products_data);
+
+    }
+}
+
+else{
+echo "problem in getting data";
+}
+
+if($_SERVER['REQUEST_METHOD'] == "GET")
+{
+    // print_r( $_GET['product_id']);
+    $trucking_order_id = $_GET['tid'];
+    // Reading from the data base
+    $query = "select * from truck_orders where truckOrderId = '{$trucking_order_id}'";
+
+    $result = mysqli_query($con, $query);
+    // print_r( $result);
+
+    if($result)
+    {
+        if($result && mysqli_num_rows($result) > 0)
+        {
+            $trucking_order_data = mysqli_fetch_all($result);
+            // print_r( $loading_order_data);
+            // $selected_product_flag = 1;
+        }
+    }
+
+    else{
+        echo "problem in getting data";
+    }
+}
 
 if($_SERVER['REQUEST_METHOD'] == "POST")
 {
     print_r($_POST);
+    $trucking_order_id = $_POST['truckingcontainerId'];
+    $mileage =  $_POST['mileage'];
+    $eta = $_POST['eta'];
+    $arrival_date = $_POST['arrival_date'];
+    $pickup_time = $_POST['pickup_time'];
     $real_data = json_decode($_POST['total'],true);
-    $code = $_POST['ISO6346_code'];
-    $sourceHarborId = $real_data['harborId'];
-    $destinationHarborId = "0000";
-    $capacity = 0;
-
-    // echo $code;
-
-    if(!empty($_FILES["image_file"]["name"])) { 
-        echo "Inside image code!";
-        // Get file info 
-        $fileName = basename($_FILES["image_file"]["name"]); 
-        $fileType = pathinfo($fileName, PATHINFO_EXTENSION); 
-         
-        // Allow certain file formats 
-        $allowTypes = array('jpg','png','jpeg','gif'); 
-        if(in_array($fileType, $allowTypes)){ 
-            echo "In!";
-            $image = $_FILES['image_file']['tmp_name']; 
-
-            $imgContent = addslashes(file_get_contents($image)); 
-        }
-    }
-    $onShip = "No";
-    $query = "insert into containers (ISO6346_Code,containerImage,sourceHarborId,destinationHarborId,onShip) values ('{$code}','{$imgContent}','{$sourceHarborId}','{$destinationHarborId}','{$onShip}')";
+    $driver_id = $real_data['driverId'];
+    $truck_id = $real_data['truck_id'];
+    $accepted = "Yes";
+    $query = "update truck_orders set truckId='{$truck_id}', driverId = '{$driver_id}' ,acceptedByTruckCom ='{$accepted}',arriveDate='{$arrival_date}',pickupTime='{$pickup_time}' where truckOrderId = '{$trucking_order_id}'";
 
     mysqli_query($con, $query);
-
-    header("Location: addcontainer.php");
+    header("Location: success_accepted.php");
     die;
+    // $containerId = $_POST['containerId'];
+    // $sourceHarborId = $_POST['sourceHarborId'];
+    // $destinationHarborId = $_POST['destinationHarborId'];
+    // $arrivalDate = $_POST['arrival_date'];
+    // // Changing the date format
+    // $formatDate = explode("-",$arrivalDate);
+    // $c = $formatDate[0];
+    // $formatDate[0] = $formatDate[1];
+    // $formatDate[1] = $formatDate[2];
+    // $formatDate[2] = $c;
+    // $formattedDate = implode("-",$formatDate);
+    // $arrivalDate = $formattedDate;
+
+    
+
+    // $real_data = json_decode($_POST['total'],true);
+    // $onShipDate = $real_data['onShipDate'];
+    // $ship_id = $real_data['shipId'];
+    // $ffcId = $user_id;
+
+    // // echo $ship_id;
+
+    // $query = "insert into shipping_order (containerId,sourceHarborId,destinationHarborId,FFCId,shipID,onShipDate,arrivalDate,arrived,completedByTruck) values ('{$containerId}', '{$sourceHarborId}', '{$destinationHarborId}', '{$ffcId}', '{$ship_id}', '{$onShipDate}', '{$arrivalDate}', 0,0)";
+
+    // mysqli_query($con, $query);
+    // $status = 1;
+    
+    // $query = "update loading_orders set onShip ='{$status}' where containerId = '{$containerId}'";
+
+    // mysqli_query($con, $query);
+
+    // $onShip = "Yes";
+    
+    // $query = "update containers set onShip ='{$onShip}' where containerId = '{$containerId}'";
+
+    // mysqli_query($con, $query);
+
+    // 
     // When the user clicks on the create account button
     // $harborName = $_POST['harbourName'];
     // $country  = $_POST['country'];
@@ -233,49 +326,83 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
         </div>
     </nav>
 </div>
-    <div class="container mt-5">
-        <div class="row justify-content-center mt-5">
+    <div class="container mt-1">
+        <div class="row justify-content-center mt-1">
             <div class="col-6">
-                <img src="containers.jpeg" class="img-fluid" alt="Responsive image">
+                <img src="driver.jpg" class="img-fluid" alt="Responsive image">
                 
                     <ul>
-                        <li><p class="mt-4"> Fill the details to add a harbour stock room</p> </li>
+                        <li><p class="mt-4"> Fill the details to assign a driver for delivery.</p> </li>
                     </ul>
             </div>
             <div class="col-6">
                 <div class="card p-2">
                     <div class="card-body"> 
-                        <form action="addcontainer.php" method = "post" enctype="multipart/form-data">  
-                            <div class="mb-4">
-                                <label for="exampleFormControlInput1" class="form-label">ISO6346 code of container </label>
-                                <input type="text" class="form-control" name = "ISO6346_code" id="ISO6346_code">
+                        <form action="trucking_company.php" method = "post">
+
+                            <div class="mb-2">
+                                <label for="exampleFormControlInput1" class="form-label">Trucking order ID</label>
+                                <input type="text" class="form-control" id="truckingcontainerId" name = "truckingcontainerId" value=" <?php echo $trucking_order_data[0][0]; ?>" readonly>
                             </div>
 
-                            <div class="mb-4">
-                                <label for="exampleFormControlInput1" class="form-label">Assign to harbor: </label>
+                            <div class="mb-2">
+                                <label for="exampleFormControlInput1" class="form-label">Distance to cover(miles)</label>
+                                <input type="text" class="form-control" id="mileage" name = "mileage" value=" <?php echo $trucking_order_data[0][10]; ?>" readonly>
+                            </div>  
+                            
+                            <div class="mb-2">
+                                <label for="exampleFormControlInput1" class="form-label">ETA(minutes)</label>
+                                <input type="text" class="form-control" id="eta" name = "eta" value=" <?php echo $trucking_order_data[0][11]; ?>" readonly>
+                            </div>  
+
+                            <div class="mb-2">
+                                <label for="exampleFormControlInput1" class="form-label">Delivery departure time (Click on the clock to select time)</label>
+                                <input type="time" id="pickup_time" class="form-control" name="pickup_time">
+                                <!-- <input type="text" class="form-control" id="exampleFormControlInput1" name = "grossCubeFeet"> -->
+                            </div>
+
+                            <div class="mb-2">
+                                <label for="exampleFormControlInput1" class="form-label">Delivery date (Click on the calendar to select date)</label>
+                                <input type="date" id="arrival_date" class="form-control" name="arrival_date">
+                                <!-- <input type="text" class="form-control" id="exampleFormControlInput1" name = "grossCubeFeet"> -->
+                            </div>
+                            <div class="mb-2">
+                                <label for="exampleFormControlInput1" class="form-label">Select driver</label>
+                                
                                 <div class="dropdown">
-                                    <select class="form-select" aria-label="Default select example" onchange="setHarbor()" id="harbor">
-                                        <option selected>Choose harbor from the list</option>
-                                        <?php for ($row = 0; $row < count($harbors_data); $row++) { ?>
+                                    <select class="form-select" aria-label="Default select example" onchange="setdriverId()" id="driver_id">
+                                        <option selected>Choose driver from the list</option>
+                                        <?php for ($row = 0; $row < count($drivers_data); $row++) { ?>
                                             
-                                            <option value="<?php echo $harbors_data[$row][0]; ?>" >
-                                                <?php echo $harbors_data[$row][1]; ?>
+                                            <option value="<?php echo $drivers_data[$row][0]; ?>" >
+                                                <?php echo $drivers_data[$row][1]; ?>
                                             </option>
                                         <?php }?>
                                     </select>
                                 </div>
-                            </div>
-                        
-                            <div class="mb-4">
-                                <label for="formFile" class="form-label">Choose the container image file</label>
-                                <input class="form-control" type="file" id="formFile" name="image_file">
+                                <!-- <input type="hidden" class="form-control" id="exampleFormControlInput1" name = "sourceHarbourId" vlue=""> -->
                             </div>
 
-                            
-                         
+                            <div class="mb-2">
+                                <label for="exampleFormControlInput1" class="form-label">Select truck</label>
+                                
+                                <div class="dropdown">
+                                    <select class="form-select" aria-label="Default select example" onchange="setTruckId()" id="truck_id">
+                                        <option selected>Choose truck from the list</option>
+                                        <?php for ($row = 0; $row < count($trucks_data); $row++) { ?>
+                                            
+                                            <option value="<?php echo $trucks_data[$row][0]; ?>" >
+                                                <?php echo $trucks_data[$row][1]; ?>
+                                            </option>
+                                        <?php }?>
+                                    </select>
+                                </div>
+                                <!-- <input type="hidden" class="form-control" id="exampleFormControlInput1" name = "sourceHarbourId" vlue=""> -->
+                            </div>
+
+                          
                             <input type="hidden" name="total" id="poster" value="abc"/>  
-                           
-                            <button type="submit" class="btn btn-primary" onclick="setJson()">Add container</button>
+                            <button  type="submit" onclick = "setJson()"class=" mb-0 btn btn-primary">Confirm</button>
                         </form>
                     </div>
 
@@ -286,28 +413,40 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
     </div>
 
     <script>
-        var harborId = 0;
-        var container_ISO_code = document.getElementById('ISO6346_code').value;
+        var onship = "";
+        var driverId = 0;
+        var truck_id = 0;
         var productId = 0;
 
-        function setcode()
+        function setdriverId()
         {
-            container_ISO_code = document.getElementById('code').value;
-            console.log("The selected name=" + container_ISO_code);
+            console.log("The selected name=" + driverId);
+
+            var subjectIdNode = document.getElementById('driver_id');
+            driverId = subjectIdNode.options[subjectIdNode.selectedIndex].value;
+            console.log("The selected name=" + driverId);
 
         }
-        function setHarbor()
+
+        function setTruckId()
         {
-            var subjectIdNode = document.getElementById('harbor');
-            harborId = subjectIdNode.options[subjectIdNode.selectedIndex].value;
-            console.log("The selected name=" + harborId);
+            console.log("The selected name=" + driverId);
+
+            var subjectIdNode = document.getElementById('truck_id');
+            truck_id = subjectIdNode.options[subjectIdNode.selectedIndex].value;
+            // console.log("The selected name=" + driverId);
 
         }
+        
         function setJson()
         {
+            var currentdate = new Date();
+            // var date = currentdate.getMonth().toString()+"-"+currentdate.getDate().toString()+"-"+currentdate.getFullYear().toString()
             var poster =  document.getElementById("poster");
             var order_data = {
-                    "harborId": parseInt(harborId)
+                    "driverId"    : parseInt(driverId),
+                    "truck_id"    : parseInt(truck_id)
+                    // "onShipDate" : date
                     }
             json_data = JSON.stringify(order_data);
             poster.value = json_data;

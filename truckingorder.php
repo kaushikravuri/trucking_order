@@ -189,7 +189,7 @@ if($_SERVER['REQUEST_METHOD'] == "GET")
 
 if($_SERVER['REQUEST_METHOD'] == "POST")
 {
-    print_r($_POST);
+    // print_r($_POST);
    
     $real_data = json_decode($_POST['total'],true);
     // $containerId = $real_data['containerId'];
@@ -201,8 +201,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
     $eta = $_POST['eta']; 
 
     $query = "insert into truck_orders (containerId,FFCId,statusId,harborId,harborLeaveDate,truckId,driverId,warehouseId,
-              truckingCompanyId,mileage,arriveDate,unloadDate,ifLoadOnReturn,returnGrossWeight,acceptedByTruckCom,acceptedByWarehouse,otherNote) values (
-                '{$containerId}', '{$user_id}', 0,'{$harborId}',0, 0, 0,'{$warehouseId}','{$truckingCompanyId}','{$mileage}','{$eta}',0,0,0,0, 0,0)";
+              truckingCompanyId,mileage,ETA,arriveDate,unloadDate,ifLoadOnReturn,returnGrossWeight,acceptedByTruckCom,acceptedByWarehouse,otherNote,pickupTime) values (
+                '{$containerId}', '{$user_id}', 0,'{$harborId}',0, 0, 0,'{$warehouseId}','{$truckingCompanyId}','{$mileage}','{$eta}',0,0,0,0,0,0,0,0)";
 
     mysqli_query($con, $query);
     // $arrived = "Yes";
@@ -220,8 +220,8 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
     //     $result = mysqli_query($con, $update_container);
     // } 
 
-    // header("Location: success.php");
-    // die;
+    header("Location: success.php");
+    die;
     // $source = $container_data[0][3];
     // $destination = "0000";
 
@@ -324,9 +324,25 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="shipping_orders.php">Sea shipping order</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="index.php">Truck shipping order</a></li>
+                        <li><a class="dropdown-item" href="arrived_status.php">Ships arrival</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="truckingorder.php">Truck shipping order</a></li>
                     </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Trucking and warehouse access
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="orders_trucking.php">Orders for trucking company</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="orders_warehouse.php">Orders for warehouses</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="orders_driver.php">Orders for drivers</a></li>
+                    </ul>
+                </li>
+                
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Manufacturer
@@ -350,7 +366,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
     <div class="container mt-1">
         <div class="row justify-content-center mt-1">
             <div class="col-6">
-                <img src="trucking order.jpg" class="img-fluid" alt="Responsive image">
+                <img src="truck_loading.jpg" class="img-fluid" alt="Responsive image">
                 
                     <ul>
                         <li><p class="mt-4"> Fill the appropriate details to raise trucking order.</p> </li>
@@ -448,7 +464,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                             
                 
                             <input type="hidden" name="total" id="poster" value="abc"/>  
-                            <button type="submit" onclick = "setJson()"class="btn btn-primary">Arrived</button>
+                            <button type="submit" onclick = "setJson()"class="btn btn-primary">Place order</button>
                         </form>
                     </div>
 

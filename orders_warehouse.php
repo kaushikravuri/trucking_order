@@ -55,45 +55,51 @@ if($_SERVER['REQUEST_METHOD'] == "GET")
 
 if($_SERVER['REQUEST_METHOD'] == "POST")
 {
-    print_r($_POST);
-    $containerId = $_POST['containerId'];
-    $sourceHarborId = $_POST['sourceHarborId'];
-    $destinationHarborId = $_POST['destinationHarborId'];
-    $arrivalDate = $_POST['arrival_date'];
-    // Changing the date format
-    $formatDate = explode("-",$arrivalDate);
-    $c = $formatDate[0];
-    $formatDate[0] = $formatDate[1];
-    $formatDate[1] = $formatDate[2];
-    $formatDate[2] = $c;
-    $formattedDate = implode("-",$formatDate);
-    $arrivalDate = $formattedDate;
+    // print_r($_POST);
+    $trucking_order_id = $_POST['total'];
+    $accepted = "Yes";
+    $query = "update truck_orders set acceptedByWarehouse ='{$accepted}' where truckOrderId = '{$trucking_order_id}'";
+
+    mysqli_query($con, $query);
+
+    // $containerId = $_POST['containerId'];
+    // $sourceHarborId = $_POST['sourceHarborId'];
+    // $destinationHarborId = $_POST['destinationHarborId'];
+    // $arrivalDate = $_POST['arrival_date'];
+    // // Changing the date format
+    // $formatDate = explode("-",$arrivalDate);
+    // $c = $formatDate[0];
+    // $formatDate[0] = $formatDate[1];
+    // $formatDate[1] = $formatDate[2];
+    // $formatDate[2] = $c;
+    // $formattedDate = implode("-",$formatDate);
+    // $arrivalDate = $formattedDate;
 
     
 
-    $real_data = json_decode($_POST['total'],true);
-    $onShipDate = $real_data['onShipDate'];
-    $ship_id = $real_data['shipId'];
-    $ffcId = $user_id;
+    // $real_data = json_decode($_POST['total'],true);
+    // $onShipDate = $real_data['onShipDate'];
+    // $ship_id = $real_data['shipId'];
+    // $ffcId = $user_id;
 
     // echo $ship_id;
 
-    $query = "insert into shipping_order (containerId,sourceHarborId,destinationHarborId,FFCId,shipID,onShipDate,arrivalDate,arrived,completedByTruck) values ('{$containerId}', '{$sourceHarborId}', '{$destinationHarborId}', '{$ffcId}', '{$ship_id}', '{$onShipDate}', '{$arrivalDate}', 0,0)";
+    // $query = "insert into shipping_order (containerId,sourceHarborId,destinationHarborId,FFCId,shipID,onShipDate,arrivalDate,arrived,completedByTruck) values ('{$containerId}', '{$sourceHarborId}', '{$destinationHarborId}', '{$ffcId}', '{$ship_id}', '{$onShipDate}', '{$arrivalDate}', 0,0)";
 
-    mysqli_query($con, $query);
-    $status = 1;
+    // mysqli_query($con, $query);
+    // $status = 1;
     
-    $query = "update loading_orders set onShip ='{$status}' where containerId = '{$containerId}'";
+    // $query = "update loading_orders set onShip ='{$status}' where containerId = '{$containerId}'";
 
-    mysqli_query($con, $query);
+    // mysqli_query($con, $query);
 
-    $onShip = "Yes";
+    // $onShip = "Yes";
     
-    $query = "update containers set onShip ='{$onShip}' where containerId = '{$containerId}'";
+    // $query = "update containers set onShip ='{$onShip}' where containerId = '{$containerId}'";
 
-    mysqli_query($con, $query);
+    // mysqli_query($con, $query);
 
-    header("Location: success_shipping.php");
+    header("Location: success_accepted.php");
     die;
     // When the user clicks on the create account button
     // $harborName = $_POST['harbourName'];
@@ -216,9 +222,25 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="shipping_orders.php">Sea shipping order</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="index.php">Truck shipping order</a></li>
+                        <li><a class="dropdown-item" href="arrived_status.php">Ships arrival</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="truckingorder.php">Truck shipping order</a></li>
                     </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Trucking and warehouse access
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="orders_trucking.php">Orders for trucking company</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="orders_warehouse.php">Orders for warehouses</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="orders_driver.php">Orders for drivers</a></li>
+                    </ul>
+                </li>
+                
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Manufacturer
@@ -295,7 +317,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                
                 <td class="text-center">
                     <?php 
-                        if($trucking_orders_data[$row][16] == "1")
+                        if($trucking_orders_data[$row][18] == "Yes")
                         { ?>
                             <div class="row">
                                 <div class="col-12">
@@ -307,7 +329,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                     <?php } ?>
 
                     <?php 
-                        if($trucking_orders_data[$row][16] == "0")
+                        if($trucking_orders_data[$row][18] == "0")
                         { ?>
                             <div class="row">
                                 <div class="col-12">
@@ -322,11 +344,12 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                 </td>
                 <td class="text-center">
                     <?php 
-                        if($trucking_orders_data[$row][16] == "0")
+                        if($trucking_orders_data[$row][18] == "0")
                         { ?>
-                            <a href="http://localhost/Container-Scheduling-and-management/shippingorderform.php?cid=<?php echo $trucking_orders_data[$row][0]; ?>">
-                            <button type="button" class="btn btn-success"> Accept   </button>   
-                            </a> 
+                            <form method="post" action="orders_warehouse.php">
+                            <input type="hidden" name="total" id="poster" value="<?php echo $trucking_orders_data[$row][0]; ?>"/>  
+                            <button type="submit" class="btn btn-success"> Accept   </button> 
+                            </form>  
                         <?php } ?>   
                 </td>
               </tr>

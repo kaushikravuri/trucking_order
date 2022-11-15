@@ -216,9 +216,25 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="shipping_orders.php">Sea shipping order</a></li>
                         <li><hr class="dropdown-divider"></li>
-                        <li><a class="dropdown-item" href="index.php">Truck shipping order</a></li>
+                        <li><a class="dropdown-item" href="arrived_status.php">Ships arrival</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="truckingorder.php">Truck shipping order</a></li>
                     </ul>
                 </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                        Trucking and warehouse access
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a class="dropdown-item" href="orders_trucking.php">Orders for trucking company</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="orders_warehouse.php">Orders for warehouses</a></li>
+                        <li><hr class="dropdown-divider"></li>
+                        <li><a class="dropdown-item" href="orders_driver.php">Orders for drivers</a></li>
+                    </ul>
+                </li>
+                
+
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                         Manufacturer
@@ -298,7 +314,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
 
                 <td class="text-center">
                     <?php 
-                        if($trucking_orders_data[$row][15] == "1")
+                        if($trucking_orders_data[$row][17] == "Yes")
                         { ?>
                             <div class="row">
                                 <div class="col-12">
@@ -310,7 +326,7 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                     <?php } ?>
 
                     <?php 
-                        if($trucking_orders_data[$row][15] == "0")
+                        if($trucking_orders_data[$row][17] == "0")
                         { ?>
                             <div class="row">
                                 <div class="col-12">
@@ -325,9 +341,9 @@ if($_SERVER['REQUEST_METHOD'] == "POST")
                 </td>
                 <td class="text-center">
                     <?php 
-                        if($trucking_orders_data[$row][15] == "0")
+                        if($trucking_orders_data[$row][17] == "0")
                         { ?>
-                            <a href="http://localhost/Container-Scheduling-and-management/shippingorderform.php?cid=<?php echo $trucking_orders_data[$row][0]; ?>">
+                            <a href="http://localhost/Container-Scheduling-and-management/trucking_company.php?tid=<?php echo $trucking_orders_data[$row][0]; ?>">
                             <button type="button" class="btn btn-success"> Accept   </button>   
                             </a> 
                         <?php } ?>   
