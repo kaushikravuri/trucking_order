@@ -110,6 +110,9 @@ $user_data = check_login($con);
                         Trucking company
                     </a>
                     <ul class="dropdown-menu">
+                        
+                        <li><a class="dropdown-item" href="truckingorder.php">Raise trucking order</a></li>
+                        <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="orders_trucking.php">Orders for trucking company</a></li>
                         <li><hr class="dropdown-divider"></li>
                         <li><a class="dropdown-item" href="orders_warehouse.php">Orders for warehouses</a></li>
