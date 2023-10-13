@@ -40,6 +40,7 @@ session_start();
             (!empty($company_address))&& (!empty($website_link))&& (!empty($contact_number)))
         {
             // Saving to data base
+            // $query = "insert into trucking_companies (companyName,email,website,contactPerson,contactNumber,address) values ('$name','$emailId','$website_link','$contact_name','$contact_number','$company_address')";
             $query = "insert into trucking_companies (companyName,email,website,contactPerson,contactNumber,address) values ('$name','$emailId','$website_link','$contact_name','$contact_number','$company_address')";
 
             mysqli_query($con, $query);
